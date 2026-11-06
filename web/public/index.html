@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ParallelLab-MPI performance dashboard comparing sequential Python, multiprocessing, and MPI.">
+  <title>ParallelLab-MPI | Performance Lab</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="ParallelLab-MPI home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>ParallelLab<span class="brand-accent">.MPI</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#results">Results</a>
+        <a href="#charts">Charts</a>
+        <a href="#methodology">Methodology</a>
+        <a class="nav-github" href="https://github.com/SUMAIRDERO62/ParallelLab-MPI" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero section-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot"></span> Python parallel computing laboratory</p>
+          <h1>One workload.<br><em>Three execution models.</em></h1>
+          <p class="hero-lede">A measured comparison of sequential Python, local multiprocessing, and distributed MPI execution — built to make scaling behavior visible.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#results">Explore results <span aria-hidden="true">↓</span></a>
+            <a class="button button-quiet" href="https://github.com/SUMAIRDERO62/ParallelLab-MPI" target="_blank" rel="noreferrer">View source <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-meta">
+            <span><strong>5M</strong> values processed</span>
+            <span class="meta-separator"></span>
+            <span><strong>3</strong> repetitions</span>
+            <span class="meta-separator"></span>
+            <span><strong>1 · 2 · 4</strong> workers</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Abstract parallel execution visualization">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="orbit orbit-three"></div>
+          <div class="core-node"><span class="core-pulse"></span><span class="core-label">n²</span></div>
+          <div class="node node-seq"><span class="node-line"></span><b>SEQ</b><small>baseline</small></div>
+          <div class="node node-mp"><span class="node-line"></span><b>MP</b><small>pool</small></div>
+          <div class="node node-mpi"><span class="node-line"></span><b>MPI</b><small>ranks</small></div>
+          <span class="visual-caption">partition · compute · reduce</span>
+        </div>
+      </section>
+
+      <section id="overview" class="section overview-section">
+        <div class="section-heading">
+          <p class="eyebrow">01 / The experiment</p>
+          <h2>Performance, without the guesswork.</h2>
+        </div>
+        <div class="overview-grid">
+          <p class="overview-lede">ParallelLab-MPI runs the same deterministic sum-of-squares workload through three process models. Every result is validated, every timing is recorded, and every chart is generated from the measured CSV.</p>
+          <div class="objectives">
+            <div class="objective"><span>01</span><p>Partition <code>1..n</code> into balanced, non-overlapping ranges.</p></div>
+            <div class="objective"><span>02</span><p>Compare execution time as worker count changes.</p></div>
+            <div class="objective"><span>03</span><p>Separate sequential baseline metrics from implementation scaling.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section implementations-section">
+        <div class="section-heading compact-heading">
+          <p class="eyebrow">Execution models</p>
+          <h2>Three ways to compute <code>Σ i²</code>.</h2>
+        </div>
+        <div class="implementation-grid">
+          <article class="implementation-card seq-card">
+            <div class="card-icon">01</div>
+            <div><span class="card-kicker">Reference</span><h3>Sequential Python</h3></div>
+            <p>One process iterates over the complete range and establishes the timing baseline.</p>
+            <div class="card-footer"><span>single process</span><span class="card-arrow">→</span></div>
+          </article>
+          <article class="implementation-card mp-card">
+            <div class="card-icon">02</div>
+            <div><span class="card-kicker">Shared memory</span><h3>Multiprocessing</h3></div>
+            <p>A <code>multiprocessing.Pool</code> maps balanced chunks to local worker processes.</p>
+            <div class="card-footer"><span>local workers</span><span class="card-arrow">→</span></div>
+          </article>
+          <article class="implementation-card mpi-card">
+            <div class="card-icon">03</div>
+            <div><span class="card-kicker">Distributed</span><h3>MPI / mpi4py</h3></div>
+            <p>MPI ranks compute local ranges, then combine results with collective reductions.</p>
+            <div class="card-footer"><span>MPI ranks</span><span class="card-arrow">→</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="results" class="section results-section">
+        <div class="section-heading results-heading">
+          <div><p class="eyebrow">02 / Measured output</p><h2>The numbers that matter.</h2></div>
+          <p class="data-status" id="data-status" role="status"><span class="loading-spinner"></span> Loading benchmark data…</p>
+        </div>
+        <div id="error-state" class="error-state" hidden role="alert"></div>
+        <div id="summary-grid" class="summary-grid" aria-live="polite">
+          <article class="metric-card metric-primary"><span class="metric-label">Fastest measured run</span><strong class="metric-value" data-metric="fastest-time">—</strong><span class="metric-detail" data-metric="fastest-detail">Reading benchmark data</span></article>
+          <article class="metric-card"><span class="metric-label">Best sequential speedup</span><strong class="metric-value" data-metric="best-speedup">—</strong><span class="metric-detail" data-metric="best-speedup-detail">Derived from raw timings</span></article>
+          <article class="metric-card"><span class="metric-label">Workload</span><strong class="metric-value" data-metric="workload">—</strong><span class="metric-detail">sum of squares</span></article>
+          <article class="metric-card"><span class="metric-label">Recorded result</span><strong class="metric-value metric-result" data-metric="result">—</strong><span class="metric-detail">validated across implementations</span></article>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption class="sr-only">Measured benchmark results</caption>
+            <thead><tr><th scope="col">Implementation</th><th scope="col">Workers</th><th scope="col">Avg. time</th><th scope="col">Sequential speedup</th><th scope="col">Efficiency</th></tr></thead>
+            <tbody id="benchmark-table"><tr><td colspan="5" class="table-loading">Loading measured rows…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="charts" class="section charts-section">
+        <div class="section-heading">
+          <p class="eyebrow">03 / Visual analysis</p>
+          <h2>See the scaling story.</h2>
+          <p class="section-intro">Five views of the same measured dataset. Hover or zoom into the source charts for report-ready detail.</p>
+        </div>
+        <div class="chart-grid">
+          <figure class="chart-card chart-wide"><div class="chart-image"><img src="./charts/execution_time_comparison.png" alt="Execution time comparison chart" loading="lazy"></div><figcaption><span class="chart-index">01</span><div><h3>Execution time comparison</h3><p>Lower is faster. Compare the measured cost of each execution model across worker counts.</p></div></figcaption></figure>
+          <figure class="chart-card"><div class="chart-image"><img src="./charts/speedup_comparison.png" alt="Speedup comparison chart" loading="lazy"></div><figcaption><span class="chart-index">02</span><div><h3>Speedup comparison</h3><p>Separates sequential-baseline speedup from implementation-relative speedup.</p></div></figcaption></figure>
+          <figure class="chart-card"><div class="chart-image"><img src="./charts/efficiency_comparison.png" alt="Parallel efficiency comparison chart" loading="lazy"></div><figcaption><span class="chart-index">03</span><div><h3>Parallel efficiency</h3><p>Shows how close observed scaling comes to ideal linear efficiency.</p></div></figcaption></figure>
+          <figure class="chart-card"><div class="chart-image"><img src="./charts/scalability_comparison.png" alt="Scalability comparison chart" loading="lazy"></div><figcaption><span class="chart-index">04</span><div><h3>Scalability comparison</h3><p>MPI and multiprocessing relative speedup against ideal linear scaling.</p></div></figcaption></figure>
+          <figure class="chart-card chart-wide"><div class="chart-image"><img src="./charts/mpi_vs_multiprocessing.png" alt="MPI versus multiprocessing comparison chart" loading="lazy"></div><figcaption><span class="chart-index">05</span><div><h3>MPI vs multiprocessing</h3><p>Matching worker counts reveal which measured path is faster in this run.</p></div></figcaption></figure>
+        </div>
+      </section>
+
+      <section id="methodology" class="section methodology-section">
+        <div class="methodology-copy"><p class="eyebrow">04 / Read the data correctly</p><h2>Metrics with context.</h2><p>Performance numbers are only useful when their baselines and timing boundaries are explicit. This dashboard reports the project’s actual definitions.</p></div>
+        <div class="formula-list">
+          <div class="formula-row"><span class="formula-number">01</span><div><h3>Sequential-baseline speedup</h3><code>sequential time ÷ current time</code><p>How much faster a configuration is than the sequential reference.</p></div></div>
+          <div class="formula-row"><span class="formula-number">02</span><div><h3>Implementation-relative speedup</h3><code>one-worker time ÷ P-worker time</code><p>How an implementation scales against its own one-worker baseline.</p></div></div>
+          <div class="formula-row"><span class="formula-number">03</span><div><h3>Timing boundaries</h3><code>MPI ≠ multiprocessing lifecycle</code><p>Multiprocessing includes pool lifecycle overhead; MPI reports post-barrier local computation.</p></div></div>
+        </div>
+      </section>
+
+      <section class="section stack-section">
+        <div class="section-heading compact-heading"><p class="eyebrow">05 / Under the hood</p><h2>Built with a focused stack.</h2></div>
+        <div class="stack-grid">
+          <div class="stack-item"><strong>Python</strong><span>Core language</span></div>
+          <div class="stack-item"><strong>mpi4py</strong><span>MPI bindings</span></div>
+          <div class="stack-item"><strong>multiprocessing</strong><span>Local workers</span></div>
+          <div class="stack-item"><strong>Matplotlib</strong><span>Source charts</span></div>
+          <div class="stack-item"><strong>pytest</strong><span>Test suite</span></div>
+        </div>
+      </section>
+
+      <section class="section cta-section">
+        <div><p class="eyebrow">Open source experiment</p><h2>Explore the implementation.</h2><p>The dashboard presents recorded results. MPI benchmarks run in a suitable local or cluster environment — never inside this hosted static site.</p></div>
+        <a class="button button-primary" href="https://github.com/SUMAIRDERO62/ParallelLab-MPI" target="_blank" rel="noreferrer">Open GitHub repository <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>© 2026 ParallelLab-MPI</span><span>Sequential · Multiprocessing · MPI</span><a href="https://github.com/SUMAIRDERO62/ParallelLab-MPI" target="_blank" rel="noreferrer">SUMAIRDERO62/ParallelLab-MPI ↗</a></footer>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
