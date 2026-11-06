@@ -4,7 +4,9 @@ ParallelLab-MPI evaluates one deterministic workload through three execution
 models. The workload is the inclusive sum of squares from `1` through `n`.
 `common.py` contains the shared range-partitioning and partial-sum logic so
 that the implementations differ primarily in how work is scheduled and how
-partial results are aggregated.
+partial results are aggregated. `analysis.py` and `visualization.py` are
+separate post-processing layers; they do not rerun or overwrite the benchmark
+measurements.
 
 ## Sequential architecture
 
@@ -62,3 +64,13 @@ flowchart TD
 The partitioning helper also represents an empty range as `(1, 0)` when more
 workers than input values are requested; the shared helper treats that range
 as contributing zero.
+
+## Analysis and visualization architecture
+
+`benchmark.py` writes the raw measurements to
+`results/benchmark_results.csv`. `analysis.py` validates that CSV, derives
+sequential-baseline and implementation-relative metrics, and writes
+`results/performance_analysis.csv`. `visualization.py` reads the validated
+benchmark and analysis data and writes five Phase 6 charts plus the two
+legacy chart filenames. Output paths are configurable from the command line,
+which allows tests to use temporary directories.

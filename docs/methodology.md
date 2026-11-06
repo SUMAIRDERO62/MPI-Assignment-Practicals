@@ -2,78 +2,94 @@
 
 ## Workload
 
-Each run computes the integer sum of squares:
+Each implementation computes:
 
 ```text
 1^2 + 2^2 + ... + n^2
 ```
 
-The checked-in benchmark uses `n=5,000,000`. Every implementation validates
-its result against the sequential result, and the recorded result is
-`41666679166667500000`.
+The checked-in benchmark uses `n=5,000,000`. Every row reports the same
+validated result, `41666679166667500000`.
 
 ## Partitioning
 
-The range `1..n` is divided into balanced, non-overlapping inclusive chunks.
+The inclusive range `1..n` is divided into balanced, non-overlapping chunks.
 For `size` workers, each chunk receives `n // size` values and the first
-`n % size` chunks receive one additional value. This ensures that every input
-value is processed exactly once, including when `n` is not evenly divisible
-by the worker count.
+`n % size` chunks receive one additional value. Empty chunks are represented
+as `(1, 0)` and contribute zero.
 
 MPI maps chunks to ranks. Multiprocessing maps chunks to pool workers. The
 sequential implementation processes the complete range in one process.
 
 ## Repetitions and timing
 
-The benchmark defaults to three repetitions for each implementation and
-worker count. It records the arithmetic mean of those timings and writes one
-row per configuration to `results/benchmark_results.csv`.
+The benchmark defaults to three repetitions for each implementation and worker
+count. It records the arithmetic mean in
+`results/benchmark_results.csv`.
 
-The benchmark times:
+The timing boundaries are:
 
-- the sequential calculation;
-- multiprocessing pool creation, task execution, result collection, and pool
-  cleanup, as implemented by `run`;
-- the MPI local computation interval after a barrier, with rank 0 reporting
-  the maximum local elapsed time across ranks.
+- **Sequential:** calculation of the complete sum.
+- **Multiprocessing:** pool creation, task execution, result collection, and
+  pool cleanup.
+- **MPI:** local computation after `MPI.COMM_WORLD` synchronization, with the
+  maximum local elapsed time reported by rank 0. MPI launch and process startup
+  are not included.
 
-The benchmark checks that all repetitions for a configuration return the same
-integer result before writing the CSV.
+The benchmark checks that repeated runs and all implementations return the
+same integer result before writing the CSV.
 
-## Metrics
+## Analysis engine
 
-Speedup is calculated relative to the sequential average:
+`src/parallel_lab/analysis.py` loads and validates the raw CSV, then writes
+`results/performance_analysis.csv`. It rejects missing columns, malformed
+types, unsupported implementation names, duplicate implementation/worker
+rows, non-positive values, missing one-worker baselines, and inconsistent
+workload metadata.
 
-\[
-\text{speedup} = \frac{T_{\text{sequential}}}{T_{\text{parallel}}}
-\]
+The engine uses two baselines:
 
-Efficiency is speedup divided by the number of workers:
+```text
+sequential_baseline_speedup = sequential_time / current_time
+sequential_baseline_efficiency = sequential_baseline_speedup / workers
 
-\[
-\text{efficiency} = \frac{\text{speedup}}{\text{number of workers}}
-\]
+implementation_relative_speedup = implementation_one_worker_time / current_time
+implementation_relative_efficiency = implementation_relative_speedup / workers
+```
 
-An efficiency of `1.0` would represent ideal linear scaling. Values below
-`1.0` indicate that worker parallelism did not achieve ideal scaling for the
-measured configuration. The sequential baseline is assigned speedup and
-efficiency values of `1.0`.
+Worker scalability uses implementation-relative speedup for multiprocessing
+and MPI. The MPI-versus-multiprocessing comparison uses matching worker counts
+and reports the ratio of multiprocessing time to MPI time. These metrics
+describe the recorded execution paths; they do not establish universal
+hardware-independent performance.
+
+## Visualization methodology
+
+`src/parallel_lab/visualization.py` validates the analysis CSV, sorts worker
+counts numerically, and generates five PNG charts:
+
+- Execution time comparison
+- Speedup comparison
+- Parallel efficiency comparison
+- Scalability comparison with ideal linear scaling
+- MPI versus multiprocessing comparison
+
+The module also preserves the two legacy chart filenames. All charts use the
+actual CSV measurements and are written to a configurable output directory.
 
 ## Measurement limitations
 
-The CSV is one measurement set, not a hardware-independent performance
-claim. Timings can vary with CPU load, operating-system scheduling, Python and
-MPI versions, process affinity, and background activity. Three repetitions
-provide limited information about variance and do not support confidence
-intervals.
+The checked-in CSV is one measurement set, not a hardware-independent claim.
+Timings can vary with CPU load, operating-system scheduling, Python and MPI
+versions, process affinity, and background activity. Three repetitions provide
+limited information about variance and do not support confidence intervals.
 
 Process startup, worker-pool construction, synchronization, inter-process
-communication, result transfer, and MPI reduction can dominate a relatively
-small arithmetic workload. MPI and multiprocessing also use different timing
-boundaries, so their values should be interpreted as measurements of the
-implemented execution paths rather than as a complete hardware model.
+communication, result transfer, and MPI reduction can dominate this
+communication-light workload. MPI and multiprocessing also use different
+timing boundaries, so their values should be interpreted as measurements of
+the implemented execution paths.
 
-The methodology does not currently include warm-up runs, multiple input-size
+The current methodology does not include warm-up runs, multiple input-size
 sweeps, standard deviations, confidence intervals, or explicit communication
-profiling. These are appropriate improvements for a more rigorous scaling
-study.
+profiling. These are appropriate future improvements.

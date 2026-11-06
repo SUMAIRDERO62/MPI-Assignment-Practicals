@@ -1,47 +1,51 @@
 # Project summary
 
-## Objectives
+## Purpose
 
-ParallelLab-MPI was developed to demonstrate and compare three execution
-models for a deterministic CPU-bound workload: sequential Python, local
-multiprocessing, and MPI processes. The project also establishes a repeatable
-benchmarking and visualization workflow.
+ParallelLab-MPI is a university semester project comparing sequential Python,
+Python multiprocessing, and MPI through `mpi4py` on the same sum-of-squares
+workload.
 
-## Completed work
+## Completed functionality
 
-- Implemented the sum-of-squares workload and reusable balanced partitioning.
-- Added a sequential reference implementation.
-- Added multiprocessing workers using `multiprocessing.Pool`.
-- Added MPI ranks using `mpi4py`, including barrier synchronization and
-  reductions.
-- Added result validation, repeated timing, CSV output, and chart generation.
-- Added tests for correctness and partition coverage.
-- Documented architecture, methodology, measured results, and limitations.
+- Implemented the sequential reference calculation.
+- Implemented balanced shared-memory multiprocessing.
+- Implemented MPI rank partitioning, synchronization, and reductions.
+- Added repeated benchmark execution and correctness validation.
+- Preserved raw benchmark measurements in CSV format.
+- Added a validated performance-analysis engine.
+- Added sequential-baseline and implementation-relative speedup and efficiency.
+- Added worker scalability and MPI-versus-multiprocessing comparison data.
+- Added five professional performance charts and retained legacy charts.
+- Added automated tests for computation, analysis, validation, and charts.
+- Updated architecture, methodology, results, and project documentation.
+
+## Current recorded outcome
+
+The checked-in experiment uses `n=5,000,000` and three repetitions. Every
+implementation returns `41666679166667500000`. In this recorded run, MPI with
+four workers has the lowest measured average time, `0.441152 s`; MPI with two
+workers is also faster than multiprocessing at two workers.
+
+These are observations from the checked-in CSV, not general performance
+claims. See the [results analysis](results-analysis.md) and
+[methodology](methodology.md).
 
 ## Technologies
 
-The project uses Python 3, `mpi4py`, Python's `multiprocessing` module,
-Matplotlib, pandas, and pytest. Windows PowerShell commands and an MPI
-launcher such as Microsoft MPI support local execution.
+The project uses Python 3, `mpi4py`, the standard-library
+`multiprocessing` module, pandas, Matplotlib, pytest, and a Windows MPI
+launcher such as Microsoft MPI.
 
-## Outcomes
+## Project status
 
-The checked-in benchmark uses `n=5,000,000` and three repetitions. The best
-recorded configuration is MPI with two workers at `0.697793 s`, with speedup
-`1.224363` and efficiency `0.612181` relative to the sequential average of
-`0.854352 s`. Four workers were slower than two workers for both MPI and
-multiprocessing in this data set, demonstrating the effect of process and
-coordination overhead on a small, communication-light workload.
-
-These are observations from the recorded CSV, not universal performance
-claims. Repeating the benchmark on another machine may produce different
-results.
+Phase 6 Steps 2, 3, and 5 are implemented. The analysis engine,
+visualization workflow, and documentation package are complete for the current
+scope. The performance report and later Phase 6 steps remain separate work.
 
 ## Conclusion
 
-The project provides a compact, reproducible comparison of process-based
-parallel execution in Python. It shows how partitioning and aggregation can
-preserve correctness while also showing that additional workers do not
-guarantee better performance. Future evaluation should add larger workloads,
-more repetitions, variability statistics, and explicit communication
-measurements.
+The project demonstrates how correct range partitioning and aggregation can
+support comparable sequential, multiprocessing, and MPI experiments. It also
+shows why measured scalability depends on workload size, process overhead,
+timing boundaries, and execution environment.

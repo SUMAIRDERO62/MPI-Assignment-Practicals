@@ -1,56 +1,69 @@
 # Results analysis
 
 This analysis uses the checked-in
-[benchmark CSV](../results/benchmark_results.csv), rather than inferred or
-synthetic measurements. All rows use `n=5,000,000` and `3` repetitions, and
-all rows report the same result: `41666679166667500000`.
+[benchmark CSV](../results/benchmark_results.csv) and generated
+[performance analysis CSV](../results/performance_analysis.csv). No values are
+inferred from hardware specifications or synthetic measurements.
+
+All rows use `n=5,000,000` and three repetitions. Every row reports
+`41666679166667500000`.
 
 ## Recorded measurements
 
-| Implementation | Workers | Average time (s) | Speedup | Efficiency |
-|---|---:|---:|---:|---:|
-| Sequential | 1 | 0.854352 | 1.000000 | 1.000000 |
-| Multiprocessing | 1 | 0.850150 | 1.004943 | 1.004943 |
-| Multiprocessing | 2 | 0.717222 | 1.191195 | 0.595598 |
-| Multiprocessing | 4 | 0.846824 | 1.008889 | 0.252222 |
-| MPI | 1 | 0.846328 | 1.009481 | 1.009481 |
-| MPI | 2 | 0.697793 | 1.224363 | 0.612181 |
-| MPI | 4 | 0.755873 | 1.130284 | 0.282571 |
+| Implementation | Workers | Average time (s) | Sequential speedup | Sequential efficiency | Relative speedup | Relative efficiency |
+|---|---:|---:|---:|---:|---:|---:|
+| Sequential | 1 | 1.228292 | 1.000000 | 1.000000 | 1.000000 | 1.000000 |
+| Multiprocessing | 1 | 1.191418 | 1.030950 | 1.030950 | 1.000000 | 1.000000 |
+| Multiprocessing | 2 | 0.715021 | 1.717841 | 0.858921 | 1.666270 | 0.833135 |
+| Multiprocessing | 4 | 0.724475 | 1.695424 | 0.423856 | 1.644526 | 0.411131 |
+| MPI | 1 | 0.932027 | 1.317872 | 1.317872 | 1.000000 | 1.000000 |
+| MPI | 2 | 0.487354 | 2.520329 | 1.260165 | 1.912423 | 0.956211 |
+| MPI | 4 | 0.441152 | 2.784283 | 0.696071 | 2.112710 | 0.528178 |
 
-Speedup is computed as sequential average time divided by the configuration's
-average time. Efficiency is speedup divided by the worker count.
+Sequential-baseline metrics use the sequential row. Relative metrics use the
+one-worker row of the same implementation.
 
 ## Comparison
 
-The best observed configuration is MPI with two workers: `0.697793 s`,
-speedup `1.224363`, and efficiency `0.612181`. Multiprocessing with two
-workers is the second-fastest parallel row at `0.717222 s`, speedup `1.191195`,
-and efficiency `0.595598`.
+The fastest measured row in this CSV is MPI with four workers at `0.441152 s`.
+MPI with two workers is the fastest configuration at the same worker count
+comparison against multiprocessing: `0.487354 s` versus `0.715021 s`.
+MPI is also faster at four workers: `0.441152 s` versus `0.724475 s`.
 
-The one-worker rows are close to the sequential baseline. The small
-above-baseline speedups in those rows should not be interpreted as parallel
-scaling; they are within the kind of run-to-run variation expected from
-process and timing differences.
+These statements describe this checked-in run only. They are not claims that
+MPI is universally faster than multiprocessing on other machines, workloads,
+or MPI configurations.
 
-Four workers are slower than two workers for both parallel approaches in this
-CSV. Multiprocessing takes `0.846824 s`, while MPI takes `0.755873 s`. Thus,
-the data does not show monotonic scaling with worker count. The corresponding
-efficiencies, `0.252222` and `0.282571`, are substantially below the
-two-worker efficiencies.
+## Scaling observations
 
-## Overhead and scaling
+Implementation-relative speedup reaches `2.112710` for MPI with four workers
+and `1.644526` for multiprocessing with four workers. The corresponding
+relative efficiencies are `0.528178` and `0.411131`, both below ideal linear
+scaling.
 
-The workload performs simple integer arithmetic and has little communication
-per input value. Creating processes, scheduling work, synchronizing, moving
-partial results, and reducing them therefore consume a meaningful portion of
-the run. With four workers, the smaller chunks do not compensate for those
-costs in this measurement.
+The simple arithmetic workload and the timing boundaries make process startup,
+scheduling, synchronization, result transfer, and reduction overhead
+important. A larger worker count does not guarantee a lower measured time.
 
-The MPI two-worker row is the fastest recorded configuration, but this result
-is specific to the checked-in run and its execution environment. It does not
-establish that MPI is universally faster than multiprocessing. A stronger
-scaling study would repeat the experiment across input sizes, record
-variability, and control hardware and system load.
+## Five performance charts
 
-The generated [execution-time chart](../results/execution_time.png) and
-[speedup chart](../results/speedup.png) visualize the same CSV values.
+- [Execution time comparison](../results/execution_time_comparison.png):
+  compares measured average time for all three implementations.
+- [Speedup comparison](../results/speedup_comparison.png): distinguishes
+  sequential-baseline speedup from implementation-relative speedup.
+- [Efficiency comparison](../results/efficiency_comparison.png): compares
+  both efficiency definitions and shows ideal efficiency at `1.0`.
+- [Scalability comparison](../results/scalability_comparison.png): compares
+  multiprocessing and MPI relative speedup against ideal linear scaling.
+- [MPI versus multiprocessing](../results/mpi_vs_multiprocessing.png):
+  compares matching worker counts and labels the faster measured path.
+
+The legacy [execution-time chart](../results/execution_time.png) and
+[speedup chart](../results/speedup.png) are retained for compatibility.
+
+## Interpretation limits
+
+The data contains one input size and three repetitions. It does not provide
+confidence intervals, warm-up analysis, hardware characterization, affinity
+control, or communication profiling. Future conclusions should use a broader
+experimental design.
