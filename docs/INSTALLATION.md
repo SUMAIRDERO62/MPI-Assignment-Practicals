@@ -27,16 +27,20 @@ directly:
 
 ## MPI runtime
 
-Install Microsoft MPI or another Windows MPI runtime that provides
-`mpiexec.exe`. Verify that the launcher is available:
+On Windows, use the `mpiexec.exe` shipped with the MPI implementation used
+by `mpi4py`. Do not mix a Microsoft MPI launcher with an `mpi4py` build that
+loads Intel MPI or another implementation. After installing the requirements,
+the bundled launcher can be selected explicitly:
 
 ```powershell
-Get-Command mpiexec
-mpiexec -help
+.\.venv\Library\bin\mpiexec.exe -n 4 .\.venv\Scripts\python.exe `
+    practicals\01_process_rank_size.py
 ```
 
-The benchmark launcher also checks common MPI locations inside the active
-environment before searching `PATH`.
+If using a separately installed MPI implementation, verify that its launcher
+matches the vendor reported by `mpi4py` before placing it on `PATH`. The
+benchmark launcher checks common MPI locations inside the active environment
+before searching `PATH`.
 
 ## Dependencies
 

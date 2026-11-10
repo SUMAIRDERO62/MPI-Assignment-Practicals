@@ -115,15 +115,28 @@ Documentation index:
 - [Project overview](docs/PROJECT_OVERVIEW.md)
 - [Installation](docs/INSTALLATION.md)
 - [Execution guide](docs/EXECUTION_GUIDE.md)
+- [MPI assignment practicals](docs/MPI_ASSIGNMENT.md)
 - [Performance analysis](docs/PERFORMANCE_ANALYSIS.md)
 - [Detailed methodology](docs/methodology.md)
 - [Recorded results](docs/results-analysis.md)
+
+## MPI assignment practicals
+
+The first standalone teaching practical identifies the rank of each process
+and the total number of processes in `MPI.COMM_WORLD`:
+
+```powershell
+mpiexec -n 4 python practicals\01_process_rank_size.py
+```
+
+See the [MPI assignment documentation](docs/MPI_ASSIGNMENT.md) for the
+objective, concepts, algorithm, Windows MPI commands, and example output.
 
 ## Technologies
 
 - Python 3
 - `mpi4py==4.1.2`
-- Microsoft MPI or another Windows MPI implementation providing `mpiexec`
+- A Windows MPI implementation whose `mpiexec` matches `mpi4py`
 - Python `multiprocessing.Pool`
 - pandas and Matplotlib
 - pytest for automated tests
@@ -148,9 +161,17 @@ If PowerShell activation is restricted, use the interpreter directly:
 .\.venv\Scripts\python.exe -m pip install pytest
 ```
 
-Install Microsoft MPI, or another compatible MPI implementation, separately
-and ensure `mpiexec` is available. The benchmark launcher also checks common
-MPI locations inside the active environment before searching `PATH`.
+Use the MPI launcher bundled with the environment when available. For this
+project, the matching launcher is:
+
+```powershell
+.\.venv\Library\bin\mpiexec.exe -n 4 .\.venv\Scripts\python.exe `
+    practicals\01_process_rank_size.py
+```
+
+Do not mix a Microsoft MPI launcher with an `mpi4py` build linked to Intel MPI
+or another implementation. The benchmark launcher also checks common MPI
+locations inside the active environment before searching `PATH`.
 
 The project uses a `src` layout. Set `PYTHONPATH` in each PowerShell session:
 
