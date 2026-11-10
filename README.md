@@ -1,379 +1,164 @@
-# MPI-Assignment-Practicals
+# MPI Assignment Practicals
 
-## Hi 👋, I'm Sumair Ahmed Dero
+A practical-first Parallel Computing learning project built with **Python, mpi4py, NumPy, and Microsoft MPI**. It contains six independently runnable MPI practicals, a browser-based learning dashboard, a teacher presentation deck, automated tests, and a benchmark suite comparing sequential, multiprocessing, and MPI execution.
 
-### AI Student • Machine Learning Engineer • Computer Vision & Intelligent Applications
+> **Repository:** [SUMAIRDERO62/MPI-Assignment-Practicals](https://github.com/SUMAIRDERO62/MPI-Assignment-Practicals)  
+> **Focus:** MPI fundamentals → collective communication → parallel arrays and matrices → performance analysis.
 
-[![GitHub](https://img.shields.io/badge/GitHub-SUMAIRDERO62-181717?style=for-the-badge&logo=github)](https://github.com/SUMAIRDERO62)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect%20with%20me-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sumair-ahmed-dero-70ba852a0/)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20My%20Portfolio-2563EB?style=for-the-badge&logo=google-chrome&logoColor=white)](https://sumair-ahmed-dero-ai-journey.vercel.app/)
+## What this project demonstrates
 
-> I build practical AI systems, experiment with intelligent applications, and
-> turn ideas into useful software—from data and models to APIs, dashboards,
-> testing, and deployment.
+### Six assignment practicals
 
-### About me
+| # | Practical | Main MPI concepts |
+|---|---|---|
+| 01 | Process rank and size | `MPI.COMM_WORLD`, `Get_rank()`, `Get_size()` |
+| 02 | Point-to-point send and receive | `send()`, `recv()`, source, destination, tag |
+| 03 | Array distribution | `Scatterv()`, `Gatherv()`, uneven data partitions |
+| 04 | Parallel array sum | `Scatterv()`, local computation, `Reduce()`, `MPI.SUM` |
+| 05 | Parallel matrix addition | Row distribution, `Scatterv()`, `Gatherv()` |
+| 06 | Parallel matrix multiplication | `Bcast()`, row distribution, `Gatherv()` |
 
-- Pursuing a **BS in Artificial Intelligence at the University of Sindh**
-- Focused on **Machine Learning, Deep Learning, Computer Vision, NLP, and
-  Generative AI**
-- Previously worked as a **Machine Learning Intern at R-Technologies**
-- Building AI-powered tools, analytics dashboards, intelligent assistants, and
-  production-minded applications
-- Learning **Microsoft Azure, MLOps, cloud deployment, and scalable AI systems**
-- Interested in explainable AI, automation, model evaluation, and responsible
-  technology
-- Open to internships, collaboration, research discussions, freelance work, and
-  meaningful technical projects
+Each practical is a separate entry point under `practicals/`. The programs validate their results against the original input or a NumPy reference where applicable.
 
-## Project overview
+### Learning dashboard and teacher presentation
 
-MPI-Assignment-Practicals is a Python parallel-computing semester project comparing the
-same deterministic CPU-bound workload across three execution models:
+- **Dashboard:** `web/public/index.html` — static learning material, MPI concept visualizer, matrix calculator, practical navigation, and benchmark chart previews.
+- **Presentation:** `web/public/presentation.html` — a keyboard-accessible teacher demonstration deck.
+- **Written guide:** [docs/PROJECT_PRESENTATION.md](docs/PROJECT_PRESENTATION.md).
 
+The browser visualizer is an educational simulation; it does not launch MPI processes. Run the Python practicals with a real MPI runtime.
+
+### Performance comparison
+
+The `src/parallel_lab/` package also compares the same sum-of-squares workload across:
 1. Sequential Python
 2. Python `multiprocessing`
-3. MPI through `mpi4py`
+3. MPI using `mpi4py`
 
-Each implementation calculates:
+It records timing data, derives speedup and efficiency metrics, and generates charts. Checked-in benchmark numbers are measurements from one recorded environment, not universal performance guarantees.
 
-```text
-1^2 + 2^2 + ... + n^2
-```
-
-The project measures execution time, validates identical results, computes
-performance metrics, and produces report-ready visualizations. The repository
-is maintained at [SUMAIRDERO62/MPI-Assignment-Practicals](https://github.com/SUMAIRDERO62/MPI-Assignment-Practicals).
-
-## Objectives and problem statement
-
-The project studies how a simple CPU-bound workload behaves when divided among
-local worker processes or MPI ranks. It addresses:
-
-- How to partition `1..n` without overlap or omission.
-- How sequential, multiprocessing, and MPI execution compare.
-- How worker count affects speedup, efficiency, and scalability.
-- How process creation, synchronization, communication, and reduction overhead
-  affect a small workload.
-- How to preserve reproducible benchmark data while separating measurement,
-  analysis, and visualization.
-
-## Current project status
-
-Phase 6 currently includes:
-
-- Sequential, multiprocessing, and MPI implementations.
-- Balanced range partitioning and correctness checks.
-- Repeated benchmark execution with CSV output.
-- A validated performance-analysis engine.
-- Sequential-baseline and implementation-relative metrics.
-- MPI-versus-multiprocessing comparison data.
-- Five professional performance charts plus the two legacy charts.
-- Automated correctness, analysis, validation, and visualization tests.
-- Architecture, methodology, results, and project-summary documentation.
-- A professional README and focused documentation guides.
-
-The performance report and later Phase 6 work are not included in this step.
-
-## Architecture
+## Repository structure
 
 ```text
 MPI-Assignment-Practicals/
-├── src/parallel_lab/
-│   ├── common.py                 # Shared sum and balanced partition helpers
-│   ├── sequential.py             # Single-process reference implementation
-│   ├── multiprocessing_sum.py   # multiprocessing.Pool implementation
-│   ├── mpi_sum.py               # mpi4py implementation
-│   ├── benchmark.py              # Repeated measurements and raw CSV output
-│   ├── analysis.py               # Validation and derived performance metrics
-│   └── visualization.py          # Legacy and Phase 6 chart generation
-├── tests/test_parallel.py        # Unit, analysis, and visualization tests
-├── results/
-│   ├── benchmark_results.csv    # Raw checked-in benchmark measurements
-│   ├── performance_analysis.csv # Derived analysis metrics
-│   ├── execution_time.png       # Legacy chart
-│   ├── speedup.png              # Legacy chart
-│   └── *_comparison.png         # Five Phase 6 charts
-├── docs/
-│   ├── PROJECT_OVERVIEW.md
-│   ├── INSTALLATION.md
-│   ├── EXECUTION_GUIDE.md
-│   ├── PERFORMANCE_ANALYSIS.md
-│   ├── architecture.md
-│   ├── methodology.md
-│   ├── results-analysis.md
-│   └── project-summary.md
+├── .github/workflows/ci.yml
+├── docs/                 # Assignment, installation, execution, concepts and presentation guides
+├── practicals/            # Six standalone MPI practicals and shared helpers
+├── src/parallel_lab/      # Sequential, multiprocessing, MPI and benchmark modules
+├── tests/                 # Correctness, entry-point and MPI integration tests
+├── results/               # Recorded CSV data and generated charts
+├── web/public/            # Static dashboard and teacher presentation
 ├── requirements.txt
 └── README.md
 ```
 
-See the [architecture documentation](docs/architecture.md) for the execution
-and communication flow.
+## Quick start — Windows PowerShell
 
-Documentation index:
+### 1. Prerequisites
 
-- [Project overview](docs/PROJECT_OVERVIEW.md)
-- [Installation](docs/INSTALLATION.md)
-- [Execution guide](docs/EXECUTION_GUIDE.md)
-- [MPI assignment practicals](docs/MPI_ASSIGNMENT.md)
-- [Six practicals](docs/PRACTICALS.md)
-- [Teacher presentation](docs/PROJECT_PRESENTATION.md)
-- [Performance analysis](docs/PERFORMANCE_ANALYSIS.md)
-- [Detailed methodology](docs/methodology.md)
-- [Recorded results](docs/results-analysis.md)
+- Python 3.10+ (the CI workflow uses Python 3.11).
+- An MPI implementation installed on the machine.
+- `mpi4py` linked to the same MPI implementation used by `mpiexec`.
 
-## MPI assignment practicals
+For Windows, Microsoft MPI is a supported setup. Do not mix an MS-MPI launcher with an `mpi4py` installation linked against a different MPI vendor.
 
-The first standalone teaching practical identifies the rank of each process
-and the total number of processes in `MPI.COMM_WORLD`:
+### 2. Create the Python environment
 
-```powershell
-mpiexec -n 4 python practicals\01_process_rank_size.py
-```
-
-See the [six practicals](docs/PRACTICALS.md) and [teacher presentation](docs/PROJECT_PRESENTATION.md)
-for objectives, concepts, algorithms, commands, sample output, and viva prompts.
-
-## Technologies
-
-- Python 3
-- `mpi4py==4.1.2`
-- A Windows MPI implementation whose `mpiexec` matches `mpi4py`
-- Python `multiprocessing.Pool`
-- pandas and Matplotlib
-- pytest for automated tests
-- Windows PowerShell
-
-## Installation on Windows
-
-From the repository root:
+Run from the repository root:
 
 ```powershell
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python -m pip install pytest
-```
-
-If PowerShell activation is restricted, use the interpreter directly:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pip install pytest
-```
-
-Use the MPI launcher bundled with the environment when available. For this
-project, the matching launcher is:
-
-```powershell
-.\.venv\Library\bin\mpiexec.exe -n 4 .\.venv\Scripts\python.exe `
-    practicals\01_process_rank_size.py
-```
-
-Do not mix a Microsoft MPI launcher with an `mpi4py` build linked to Intel MPI
-or another implementation. The benchmark launcher also checks common MPI
-locations inside the active environment before searching `PATH`.
-
-The project uses a `src` layout. Set `PYTHONPATH` in each PowerShell session:
-
-```powershell
 $env:PYTHONPATH = "$PWD\src"
 ```
 
-## Run the implementations
+If activation is restricted, call `.venv\Scripts\python.exe` directly.
 
-Sequential reference:
-
-```powershell
-python -m parallel_lab.sequential
-```
-
-Multiprocessing with four workers:
+### 3. Verify the MPI launcher and Python binding
 
 ```powershell
-python -m parallel_lab.multiprocessing_sum --n 5000000 --processes 4
+mpiexec -n 4 python -c "from mpi4py import MPI; c=MPI.COMM_WORLD; print(f'Hello from rank {c.Get_rank()} of {c.Get_size()}')"
 ```
 
-MPI with four ranks:
+You should see four messages, one from each rank. Their print order is not guaranteed. If this fails, check that `mpiexec` and `mpi4py` use the same MPI implementation.
+
+### 4. Run the six practicals
+
+Run commands from the repository root:
 
 ```powershell
-mpiexec -n 4 python -m parallel_lab.mpi_sum --n 5000000
-```
-
-MPI with machine-readable JSON output:
-
-```powershell
-mpiexec -n 4 python -m parallel_lab.mpi_sum --n 5000000 --json
-```
-
-For `n=5,000,000`, the checked-in benchmark result is
-`41666679166667500000` for every implementation and worker configuration.
-
-## Tests
-
-With `PYTHONPATH` configured:
-
-```powershell
-python -m pytest -q
-```
-
-The test suite covers partitioning, result consistency, input validation,
-metric calculations, CSV generation, chart generation, temporary output
-directories, image validity, and preservation of source benchmark data.
-
-## Benchmark and analysis workflow
-
-Run the default benchmark. This writes the raw benchmark CSV:
-
-```powershell
-python -m parallel_lab.benchmark
-```
-
-The default uses `n=5,000,000`, three repetitions, and worker counts `1`, `2`,
-and `4`. To choose values explicitly:
-
-```powershell
-python -m parallel_lab.benchmark `
-  --n 5000000 --repeats 3 --processes 1 2 4
-```
-
-Generate the separate performance-analysis CSV without changing the raw CSV:
-
-```powershell
-python -m parallel_lab.analysis `
-  --input results\benchmark_results.csv `
-  --output results\performance_analysis.csv
-```
-
-The analysis engine validates required columns, data types, supported
-implementations, duplicate worker configurations, positive timings, baseline
-rows, and consistent workload metadata.
-
-## Visualizations
-
-Generate all five Phase 6 charts and preserve the two legacy charts:
-
-```powershell
-python -m parallel_lab.visualization `
-  --benchmark results\benchmark_results.csv `
-  --analysis results\performance_analysis.csv `
-  --output-dir results
-```
-
-The five professional charts are:
-
-1. [Execution time comparison](results/execution_time_comparison.png) —
-   measured average time for sequential, multiprocessing, and MPI; lower is
-   faster.
-2. [Speedup comparison](results/speedup_comparison.png) — sequential-baseline
-   speedup and implementation-relative speedup shown with distinct line styles.
-3. [Efficiency comparison](results/efficiency_comparison.png) —
-   sequential-baseline and implementation-relative efficiency.
-4. [Scalability comparison](results/scalability_comparison.png) —
-   multiprocessing and MPI implementation-relative speedup against ideal
-   linear scaling.
-5. [MPI versus multiprocessing](results/mpi_vs_multiprocessing.png) —
-   execution times at matching worker counts, with the faster measured
-   implementation identified for each point.
-
-### Chart previews
-
-![Execution time comparison](results/execution_time_comparison.png)
-
-![Speedup comparison](results/speedup_comparison.png)
-
-![Parallel efficiency comparison](results/efficiency_comparison.png)
-
-![Scalability comparison](results/scalability_comparison.png)
-
-![MPI versus multiprocessing comparison](results/mpi_vs_multiprocessing.png)
-
-The original [execution-time](results/execution_time.png) and
-[speedup](results/speedup.png) charts remain available for compatibility.
-
-## Benchmark methodology
-
-The raw benchmark records arithmetic means across three repetitions. The
-sequential timer covers the calculation. The multiprocessing timer includes
-pool creation, task execution, result collection, and pool cleanup. The MPI
-timer starts after a barrier and reports the maximum local computation time
-across ranks; MPI launch and process startup are outside that interval.
-
-Metrics use two distinct baselines:
-
-```text
-sequential_baseline_speedup = sequential_time / current_time
-sequential_baseline_efficiency = sequential_baseline_speedup / workers
-
-implementation_relative_speedup = one_worker_time / current_time
-implementation_relative_efficiency = implementation_relative_speedup / workers
-```
-
-The [methodology document](docs/methodology.md) describes these boundaries and
-limitations in detail.
-
-## Recorded benchmark results
-
-The checked-in [benchmark CSV](results/benchmark_results.csv) uses
-`n=5,000,000`, three repetitions, and reports the following measured averages:
-
-| Implementation | Workers | Average time (s) | Sequential speedup | Sequential efficiency |
-|---|---:|---:|---:|---:|
-| Sequential | 1 | 1.228292 | 1.000000 | 1.000000 |
-| Multiprocessing | 1 | 1.191418 | 1.030950 | 1.030950 |
-| Multiprocessing | 2 | 0.715021 | 1.717841 | 0.858921 |
-| Multiprocessing | 4 | 0.724475 | 1.695424 | 0.423856 |
-| MPI | 1 | 0.932027 | 1.317872 | 1.317872 |
-| MPI | 2 | 0.487354 | 2.520329 | 1.260165 |
-| MPI | 4 | 0.441152 | 2.784283 | 0.696071 |
-
-These are observations from the checked-in run only. They are not
-hardware-independent claims. The current [results analysis](docs/results-analysis.md)
-also includes implementation-relative metrics and matched-worker comparisons.
-
-## Limitations and future improvements
-
-- The checked-in data uses one workload size and three repetitions.
-- Timings are sensitive to CPU load, scheduling, Python version, MPI runtime,
-  process affinity, and background activity.
-- MPI and multiprocessing use different timing boundaries.
-- The workload has simple arithmetic and little communication, so it does not
-  represent every distributed application.
-- Future work can add warm-up runs, input-size sweeps, variability statistics,
-  confidence intervals, affinity controls, communication profiling, and
-  automated result archiving.
-
-Further details are available in the [architecture](docs/architecture.md),
-[methodology](docs/methodology.md), and
-[project summary](docs/project-summary.md).
-
-## Assignment practicals and learning dashboard
-
-The repository includes six independently executable MPI practicals in
-[`practicals/`](practicals/):
-
-1. Process rank and communicator size.
-2. Point-to-point send and receive.
-3. Uneven array distribution with `Scatterv` and `Gatherv`.
-4. Distributed array sum with `Reduce`.
-5. Row-wise parallel matrix addition.
-6. Row-wise parallel matrix multiplication with `Broadcast`.
-
-Run an example from PowerShell after setting `PYTHONPATH`:
-
-```powershell
+mpiexec -n 4 python practicals\practical_01_process_rank_size.py
+mpiexec -n 2 python practicals\practical_02_send_receive.py
+mpiexec -n 4 python practicals\practical_03_array_distribution.py --length 11
 mpiexec -n 4 python practicals\practical_04_parallel_array_sum.py --length 11
 mpiexec -n 4 python practicals\practical_05_parallel_matrix_addition.py
 mpiexec -n 4 python practicals\practical_06_parallel_matrix_multiplication.py
 ```
 
-The static dashboard in [`web/public/`](web/public/) now includes concept
-explanations, practical commands, a browser-only communication visualizer, and
-a small matrix calculator. The visualizer and calculator are educational
-simulations/reference calculations; real `mpi4py` execution remains on a
-compatible MPI host and is never attempted inside Vercel.
+Practical 02 needs at least two ranks. For uneven distribution, the length of 11 with four ranks is intentional: not every rank receives the same number of elements.
 
-See the [practical guide](docs/PRACTICALS.md), [MPI concepts](docs/MPI_CONCEPTS.md),
-and [deployment guide](docs/DEPLOYMENT.md) for teaching, viva, and hosting
-notes.
+Detailed objectives, algorithms, commands, and viva prompts: [Six practicals](docs/PRACTICALS.md) and [MPI assignment guide](docs/MPI_ASSIGNMENT.md).
+
+## Run tests
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+python -m pytest -v
+```
+
+The test suite includes helper and validation tests, entry-point compilation checks, and an MPI integration test when `mpiexec` is available. A passing integration test exercises the array-sum practical with two MPI ranks; it does not by itself certify every practical on every MPI installation.
+
+## Open the dashboard and presentation locally
+
+```powershell
+python -m http.server 8000 --directory web\public
+```
+
+- Dashboard: [http://localhost:8000](http://localhost:8000)
+- Teacher presentation: [http://localhost:8000/presentation.html](http://localhost:8000/presentation.html)
+
+Use the presentation's Previous/Next controls or keyboard arrows; browser fullscreen is available from the deck.
+
+## Run the benchmark project
+
+Set the source import path first:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+python -m parallel_lab.benchmark
+python -m parallel_lab.analysis --input results\benchmark_results.csv --output results\performance_analysis.csv
+python -m parallel_lab.visualization --benchmark results\benchmark_results.csv --analysis results\performance_analysis.csv --output-dir results
+```
+
+The benchmark invokes MPI as well as multiprocessing, so a working MPI launcher is required. See [execution guide](docs/EXECUTION_GUIDE.md), [methodology](docs/methodology.md), and [performance analysis](docs/PERFORMANCE_ANALYSIS.md).
+
+## Documentation
+
+- [Project overview](docs/PROJECT_OVERVIEW.md)
+- [MPI assignment practicals](docs/MPI_ASSIGNMENT.md)
+- [Six practical quick reference](docs/PRACTICALS.md)
+- [MPI concepts](docs/MPI_CONCEPTS.md)
+- [Installation](docs/INSTALLATION.md)
+- [Execution guide](docs/EXECUTION_GUIDE.md)
+- [Teacher presentation guide](docs/PROJECT_PRESENTATION.md)
+- [Deployment notes](docs/DEPLOYMENT.md)
+- [Performance analysis](docs/PERFORMANCE_ANALYSIS.md)
+- [Methodology](docs/methodology.md)
+- [Recorded results analysis](docs/results-analysis.md)
+
+## Deployment boundary
+
+The dashboard and presentation are static files and can be hosted on Vercel or another static host. **MPI execution is not performed by Vercel**: run the practicals and benchmarks on a local machine, university lab system, or MPI cluster. Deployment instructions are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Limitations
+
+- Parallel speedup depends on workload size, hardware, MPI runtime, process startup, communication, and system load.
+- A browser-based visualization is explanatory, not a substitute for running the MPI programs.
+- Checked-in benchmark results represent a particular recorded run and should be regenerated for a new machine.
+- The GitHub Actions workflow checks Python compilation and tests on Ubuntu; local Windows MPI execution remains an environment-specific verification.
+
+## License
+
+No license has been specified yet. Contact the repository owner before reusing this project beyond the permissions granted by GitHub's default repository terms.
