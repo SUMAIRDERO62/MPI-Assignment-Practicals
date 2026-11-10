@@ -103,6 +103,61 @@ async function loadBenchmarkData() {
   }
 }
 
+function parseMatrix(value) {
+  const rows = value.trim().split(/\r?\n/).map((line) => line.split(",").map((item) => Number(item.trim())));
+  if (!rows.length || rows.some((row) => !row.length || row.some((item) => !Number.isFinite(item)))) {
+    throw new Error("Matrices must contain comma-separated numbers.");
+  }
+  const columns = rows[0].length;
+  if (rows.some((row) => row.length !== columns)) throw new Error("Every matrix row must have the same number of columns.");
+  return rows;
+}
+
+function formatMatrix(matrix) {
+  return matrix.map((row) => row.map((value) => Number.isInteger(value) ? String(value) : value.toFixed(3)).join("  ")).join("\n");
+}
+
+function matrixAdd(left, right) {
+  if (left.length !== right.length || left[0].length !== right[0].length) throw new Error("Addition requires matrices with the same shape.");
+  return left.map((row, i) => row.map((value, j) => value + right[i][j]));
+}
+
+function matrixMultiply(left, right) {
+  if (left[0].length !== right.length) throw new Error("Multiplication requires A columns to equal B rows.");
+  return left.map((row) => right[0].map((_, column) => row.reduce((sum, value, index) => sum + value * right[index][column], 0)));
+}
+
+function setupMatrixLab() {
+  const output = document.querySelector("#matrix-output");
+  const calculate = (operation) => {
+    try {
+      const left = parseMatrix(document.querySelector("#matrix-a").value);
+      const right = parseMatrix(document.querySelector("#matrix-b").value);
+      const result = operation === "add" ? matrixAdd(left, right) : matrixMultiply(left, right);
+      output.textContent = `Sequential reference result:\n${formatMatrix(result)}`;
+      output.classList.remove("matrix-error");
+    } catch (error) {
+      output.textContent = error.message;
+      output.classList.add("matrix-error");
+    }
+  };
+  document.querySelector("#add-matrices").addEventListener("click", () => calculate("add"));
+  document.querySelector("#multiply-matrices").addEventListener("click", () => calculate("multiply"));
+}
+
+function setupVisualizer() {
+  const output = document.querySelector("#simulation-output");
+  document.querySelector("#run-simulation").addEventListener("click", () => {
+    const type = document.querySelector("#simulation-select").value;
+    const messages = {
+      scatter: ["Rank 0 owns [1, 2, 3, 4, 5, 6, 7].", "Scatterv partitions the values as [1, 2], [3, 4], [5, 6], [7].", "Every rank computes on its local chunk."],
+      reduce: ["Rank 0 computes 3, rank 1 computes 7, rank 2 computes 11.", "Reduce with MPI.SUM combines local values at rank 0.", "Root receives the final total: 21."],
+      send: ["Rank 0 prepares a tagged message.", "MPI sends it directly to rank 1.", "Rank 1 receives and verifies the message."]
+    };
+    output.innerHTML = messages[type].map((message, index) => `<div class="simulation-step"><span>${String(index + 1).padStart(2, "0")}</span><p>${message}</p></div>`).join("");
+  });
+}
+
 document.querySelectorAll("section").forEach((section) => {
   const observer = new IntersectionObserver((entries, instance) => {
     entries.forEach((entry) => {
@@ -115,4 +170,6 @@ document.querySelectorAll("section").forEach((section) => {
   observer.observe(section);
 });
 
+setupMatrixLab();
+setupVisualizer();
 loadBenchmarkData();

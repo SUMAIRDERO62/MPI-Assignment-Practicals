@@ -9,7 +9,6 @@ py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python -m pip install pytest
 ```
 
 The project uses a `src` layout. Set the import path for the current
@@ -24,7 +23,6 @@ directly:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pip install pytest
 ```
 
 ## MPI runtime
@@ -49,5 +47,4 @@ Runtime dependencies are declared in [requirements.txt](../requirements.txt):
 - Matplotlib
 - pandas
 
-`pytest` is used by the test suite but is currently installed separately
-because it is not listed in `requirements.txt`.
+- `pytest`

@@ -16,6 +16,10 @@
       </a>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="#overview">Overview</a>
+        <a href="#learning-lab">Learning lab</a>
+        <a href="#practicals">Practicals</a>
+        <a href="#visualizer">Visualizer</a>
+        <a href="#matrix-lab">Matrix lab</a>
         <a href="#results">Results</a>
         <a href="#charts">Charts</a>
         <a href="#methodology">Methodology</a>
@@ -128,6 +132,76 @@
           <figure class="chart-card"><div class="chart-image"><img src="./charts/efficiency_comparison.png" alt="Parallel efficiency comparison chart" loading="lazy"></div><figcaption><span class="chart-index">03</span><div><h3>Parallel efficiency</h3><p>Shows how close observed scaling comes to ideal linear efficiency.</p></div></figcaption></figure>
           <figure class="chart-card"><div class="chart-image"><img src="./charts/scalability_comparison.png" alt="Scalability comparison chart" loading="lazy"></div><figcaption><span class="chart-index">04</span><div><h3>Scalability comparison</h3><p>MPI and multiprocessing relative speedup against ideal linear scaling.</p></div></figcaption></figure>
           <figure class="chart-card chart-wide"><div class="chart-image"><img src="./charts/mpi_vs_multiprocessing.png" alt="MPI versus multiprocessing comparison chart" loading="lazy"></div><figcaption><span class="chart-index">05</span><div><h3>MPI vs multiprocessing</h3><p>Matching worker counts reveal which measured path is faster in this run.</p></div></figcaption></figure>
+        </div>
+      </section>
+
+      <section id="learning-lab" class="section learning-section">
+        <div class="section-heading">
+          <p class="eyebrow">04 / MPI learning lab</p>
+          <h2>Understand the building blocks.</h2>
+          <p class="section-intro">Each concept below maps to a real MPI operation used by the standalone practicals. The browser examples explain the flow; they are not MPI execution.</p>
+        </div>
+        <div class="concept-grid">
+          <article class="concept-card"><span class="concept-tag">Point-to-point</span><h3>Send / receive</h3><p>One rank sends a message to another rank with an explicit destination and tag.</p><code>comm.send(message, dest=1)</code></article>
+          <article class="concept-card"><span class="concept-tag">Collective</span><h3>Broadcast</h3><p>The root shares the same value with every rank, useful for matrix B.</p><code>comm.Bcast(matrix_b, root=0)</code></article>
+          <article class="concept-card"><span class="concept-tag">Collective</span><h3>Scatter / gather</h3><p>Scatter distributes chunks; gather returns them in rank order. Scatterv handles uneven chunks.</p><code>comm.Scatterv(...)</code></article>
+          <article class="concept-card"><span class="concept-tag">Collective</span><h3>Reduce</h3><p>Ranks combine local values at the root, such as a sum of local array totals.</p><code>comm.reduce(local_sum, MPI.SUM)</code></article>
+        </div>
+      </section>
+
+      <section id="practicals" class="section practicals-section">
+        <div class="section-heading">
+          <p class="eyebrow">05 / Six assignment practicals</p>
+          <h2>Run each experiment independently.</h2>
+          <p class="section-intro">Use a compatible MPI runtime such as Microsoft MPI. These commands run locally or on an MPI host, not in this dashboard.</p>
+        </div>
+        <div class="practical-table-wrap">
+          <table class="practical-table">
+            <thead><tr><th>Practical</th><th>What it demonstrates</th><th>Example command</th></tr></thead>
+            <tbody>
+              <tr><td>01 · Rank and size</td><td>Get rank, size, and root</td><td><code>mpiexec -n 4 python practicals\practical_01_process_rank_size.py</code></td></tr>
+              <tr><td>02 · Send / receive</td><td>Point-to-point communication</td><td><code>mpiexec -n 2 python practicals\practical_02_send_receive.py</code></td></tr>
+              <tr><td>03 · Array distribution</td><td>Scatterv and Gatherv with uneven data</td><td><code>mpiexec -n 4 python practicals\practical_03_array_distribution.py</code></td></tr>
+              <tr><td>04 · Array sum</td><td>Scatterv plus Reduce/SUM</td><td><code>mpiexec -n 4 python practicals\practical_04_parallel_array_sum.py</code></td></tr>
+              <tr><td>05 · Matrix addition</td><td>Distributed row-wise addition</td><td><code>mpiexec -n 4 python practicals\practical_05_parallel_matrix_addition.py</code></td></tr>
+              <tr><td>06 · Matrix multiplication</td><td>Broadcast B and multiply A rows</td><td><code>mpiexec -n 4 python practicals\practical_06_parallel_matrix_multiplication.py</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="visualizer" class="section visualizer-section">
+        <div class="section-heading">
+          <p class="eyebrow">06 / Interactive visualizer</p>
+          <h2>Watch a communication pattern.</h2>
+          <p class="section-intro">This is a deterministic browser simulation for teaching. It does not start MPI processes or measure performance.</p>
+        </div>
+        <div class="visualizer-panel">
+          <label for="simulation-select">Choose a simulation
+            <select id="simulation-select">
+              <option value="scatter">Scatter array chunks</option>
+              <option value="reduce">Reduce local sums</option>
+              <option value="send">Send a message to rank 1</option>
+            </select>
+          </label>
+          <button class="button button-primary" id="run-simulation" type="button">Run simulation</button>
+          <div id="simulation-output" class="simulation-output" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="matrix-lab" class="section matrix-section">
+        <div class="section-heading">
+          <p class="eyebrow">07 / Matrix lab</p>
+          <h2>Try the math in your browser.</h2>
+          <p class="section-intro">Enter small comma-separated matrices to see a sequential reference result. The MPI practicals distribute the same operations by rows.</p>
+        </div>
+        <div class="matrix-panel">
+          <label>Matrix A<textarea id="matrix-a" rows="3">1,2
+3,4</textarea></label>
+          <label>Matrix B<textarea id="matrix-b" rows="3">5,6
+7,8</textarea></label>
+          <div class="matrix-actions"><button class="button button-primary" id="add-matrices" type="button">Add matrices</button><button class="button button-quiet" id="multiply-matrices" type="button">Multiply A × B</button></div>
+          <output id="matrix-output" class="matrix-output" aria-live="polite">Results appear here.</output>
         </div>
       </section>
 

@@ -324,3 +324,33 @@ also includes implementation-relative metrics and matched-worker comparisons.
 Further details are available in the [architecture](docs/architecture.md),
 [methodology](docs/methodology.md), and
 [project summary](docs/project-summary.md).
+
+## Assignment practicals and learning dashboard
+
+The repository includes six independently executable MPI practicals in
+[`practicals/`](practicals/):
+
+1. Process rank and communicator size.
+2. Point-to-point send and receive.
+3. Uneven array distribution with `Scatterv` and `Gatherv`.
+4. Distributed array sum with `Reduce`.
+5. Row-wise parallel matrix addition.
+6. Row-wise parallel matrix multiplication with `Broadcast`.
+
+Run an example from PowerShell after setting `PYTHONPATH`:
+
+```powershell
+mpiexec -n 4 python practicals\practical_04_parallel_array_sum.py --length 11
+mpiexec -n 4 python practicals\practical_05_parallel_matrix_addition.py
+mpiexec -n 4 python practicals\practical_06_parallel_matrix_multiplication.py
+```
+
+The static dashboard in [`web/public/`](web/public/) now includes concept
+explanations, practical commands, a browser-only communication visualizer, and
+a small matrix calculator. The visualizer and calculator are educational
+simulations/reference calculations; real `mpi4py` execution remains on a
+compatible MPI host and is never attempted inside Vercel.
+
+See the [practical guide](docs/PRACTICALS.md), [MPI concepts](docs/MPI_CONCEPTS.md),
+and [deployment guide](docs/DEPLOYMENT.md) for teaching, viva, and hosting
+notes.
