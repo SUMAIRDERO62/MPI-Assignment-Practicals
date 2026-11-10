@@ -2,7 +2,7 @@
 
 ## Purpose
 
-ParallelLab-MPI is a university semester project comparing sequential Python,
+MPI-Assignment-Practicals is a university semester project comparing sequential Python,
 Python multiprocessing, and MPI through `mpi4py` on the same sum-of-squares
 workload.
 

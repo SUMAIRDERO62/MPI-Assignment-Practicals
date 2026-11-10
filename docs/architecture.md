@@ -1,6 +1,6 @@
 # Architecture
 
-ParallelLab-MPI evaluates one deterministic workload through three execution
+MPI-Assignment-Practicals evaluates one deterministic workload through three execution
 models. The workload is the inclusive sum of squares from `1` through `n`.
 `common.py` contains the shared range-partitioning and partial-sum logic so
 that the implementations differ primarily in how work is scheduled and how
