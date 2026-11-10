@@ -1,6 +1,6 @@
 # Project overview
 
-ParallelLab-MPI is a Python university semester project that compares one
+MPI-Assignment-Practicals is a Python university semester project that compares one
 deterministic sum-of-squares workload using sequential Python,
 `multiprocessing`, and MPI through `mpi4py`.
 

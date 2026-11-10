@@ -1,4 +1,4 @@
-# ParallelLab-MPI
+# MPI-Assignment-Practicals
 
 ## Hi 👋, I'm Sumair Ahmed Dero
 
@@ -28,7 +28,7 @@
 
 ## Project overview
 
-ParallelLab-MPI is a Python parallel-computing semester project comparing the
+MPI-Assignment-Practicals is a Python parallel-computing semester project comparing the
 same deterministic CPU-bound workload across three execution models:
 
 1. Sequential Python
@@ -43,7 +43,7 @@ Each implementation calculates:
 
 The project measures execution time, validates identical results, computes
 performance metrics, and produces report-ready visualizations. The repository
-is maintained at [SUMAIRDERO62/ParallelLab-MPI](https://github.com/SUMAIRDERO62/ParallelLab-MPI).
+is maintained at [SUMAIRDERO62/MPI-Assignment-Practicals](https://github.com/SUMAIRDERO62/MPI-Assignment-Practicals).
 
 ## Objectives and problem statement
 
@@ -78,7 +78,7 @@ The performance report and later Phase 6 work are not included in this step.
 ## Architecture
 
 ```text
-ParallelLab-MPI/
+MPI-Assignment-Practicals/
 ├── src/parallel_lab/
 │   ├── common.py                 # Shared sum and balanced partition helpers
 │   ├── sequential.py             # Single-process reference implementation
@@ -116,6 +116,8 @@ Documentation index:
 - [Installation](docs/INSTALLATION.md)
 - [Execution guide](docs/EXECUTION_GUIDE.md)
 - [MPI assignment practicals](docs/MPI_ASSIGNMENT.md)
+- [Six practicals](docs/PRACTICALS.md)
+- [Teacher presentation](docs/PROJECT_PRESENTATION.md)
 - [Performance analysis](docs/PERFORMANCE_ANALYSIS.md)
 - [Detailed methodology](docs/methodology.md)
 - [Recorded results](docs/results-analysis.md)
@@ -129,8 +131,8 @@ and the total number of processes in `MPI.COMM_WORLD`:
 mpiexec -n 4 python practicals\01_process_rank_size.py
 ```
 
-See the [MPI assignment documentation](docs/MPI_ASSIGNMENT.md) for the
-objective, concepts, algorithm, Windows MPI commands, and example output.
+See the [six practicals](docs/PRACTICALS.md) and [teacher presentation](docs/PROJECT_PRESENTATION.md)
+for objectives, concepts, algorithms, commands, sample output, and viva prompts.
 
 ## Technologies
 
