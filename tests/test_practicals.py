@@ -87,20 +87,51 @@ def test_practical_entrypoints_compile(script: str) -> None:
 
 
 @pytest.mark.skipif(shutil.which("mpiexec") is None, reason="MPI integration requires mpiexec")
-def test_practical_04_mpi_integration() -> None:
+@pytest.mark.parametrize(
+    ("script", "arguments", "expected"),
+    [
+        ("practical_01_process_rank_size.py", [], "root process"),
+        ("practical_02_send_receive.py", [], "received"),
+        ("practical_03_array_distribution.py", ["--length", "11"], "Gathered array"),
+        ("practical_04_parallel_array_sum.py", ["--length", "11"], "sums match"),
+        ("practical_05_parallel_matrix_addition.py", ["--rows", "5", "--columns", "3"], "addition match"),
+        (
+            "practical_06_parallel_matrix_multiplication.py",
+            ["--rows-a", "5", "--shared", "3", "--columns-b", "2"],
+            "multiplication match",
+        ),
+    ],
+)
+def test_all_practicals_run_with_two_mpi_ranks(
+    script: str,
+    arguments: list[str],
+    expected: str,
+) -> None:
+    result = subprocess.run(
+        ["mpiexec", "-n", "2", sys.executable, str(ROOT / "practicals" / script), *arguments],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert expected.lower() in result.stdout.lower()
+
+
+@pytest.mark.skipif(shutil.which("mpiexec") is None, reason="MPI integration requires mpiexec")
+def test_array_distribution_handles_more_ranks_than_values() -> None:
     result = subprocess.run(
         [
             "mpiexec",
             "-n",
-            "2",
+            "4",
             sys.executable,
-            str(ROOT / "practicals" / "practical_04_parallel_array_sum.py"),
+            str(ROOT / "practicals" / "practical_03_array_distribution.py"),
             "--length",
-            "11",
+            "2",
         ],
         cwd=ROOT,
         capture_output=True,
         text=True,
         check=True,
     )
-    assert "Verified: parallel and sequential sums match." in result.stdout
+    assert "Gathered array: [1, 2]" in result.stdout

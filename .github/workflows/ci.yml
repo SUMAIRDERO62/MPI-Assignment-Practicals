@@ -28,3 +28,18 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m pytest -q
+      - name: Run all MPI practicals
+        run: |
+          mpiexec --oversubscribe -n 4 python practicals/practical_01_process_rank_size.py
+          mpiexec --oversubscribe -n 4 python practicals/practical_02_send_receive.py
+          mpiexec --oversubscribe -n 4 python practicals/practical_03_array_distribution.py --length 11
+          mpiexec --oversubscribe -n 4 python practicals/practical_04_parallel_array_sum.py --length 11
+          mpiexec --oversubscribe -n 4 python practicals/practical_05_parallel_matrix_addition.py --rows 5 --columns 3
+          mpiexec --oversubscribe -n 4 python practicals/practical_06_parallel_matrix_multiplication.py --rows-a 5 --shared 3 --columns-b 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check frontend JavaScript
+        run: |
+          node --check web/public/script.js
+          node --check web/public/presentation.js

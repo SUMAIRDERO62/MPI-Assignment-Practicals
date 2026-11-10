@@ -1,2 +1,1 @@
-"""Standalone MPI assignment practicals for ParallelLab-MPI."""
-
+"""Standalone MPI assignment practicals for MPI-Assignment-Practicals."""

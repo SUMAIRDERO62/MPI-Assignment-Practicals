@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/web/public/index.html"
+    },
+    {
+      "source": "/presentation",
+      "destination": "/web/public/presentation.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/web/public/$1"
+    }
+  ]
+}
